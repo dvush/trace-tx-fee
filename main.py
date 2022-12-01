@@ -21,6 +21,8 @@ def show_eff_gas_price(block):
     config = {"address": block_data.miner}
     r = w3.provider.make_request('debug_traceBlockByNumber',
                                  [Web3.toHex(block_number), {'tracer': tracer, 'tracerConfig': config}])
+    if 'error' in r:
+        raise Exception(r['error']['message'])
     balances = [int(x['result']['balance']) for x in r['result']]
 
     txs = block_data.transactions
@@ -49,4 +51,7 @@ def show_eff_gas_price(block):
 
 
 if __name__ == '__main__':
-    show_eff_gas_price(sys.argv[1])
+    block = sys.argv[1]
+    if block.isnumeric():
+        block = int(block)
+    show_eff_gas_price(block)
